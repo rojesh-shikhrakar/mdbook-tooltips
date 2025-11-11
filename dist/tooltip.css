@@ -1,0 +1,30 @@
+.tooltip-word {
+      position: relative;
+      cursor: help;
+      color: #0077cc;
+      text-decoration: underline dotted;
+    }
+
+    .tooltip-word .tooltip-text {
+      visibility: hidden;
+      width: 250px;
+      background-color:rgba(0, 0, 0, 0.8);
+      color: #fff;
+      font-size:x-small;
+      text-align: center;
+      border-radius: 6px;
+      padding: 6px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%; /* Position above the word */
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: normal;
+    }
+
+    .tooltip-word:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
