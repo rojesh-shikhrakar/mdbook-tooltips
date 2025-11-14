@@ -6,6 +6,7 @@ edition = "2021"
 description = "mdBook preprocessor to add tooltips features to your book"
 repository = "https://github.com/rojesh-shikhrakar/mdbook-tooltips"
 license = "MIT"
+homepage = "https://github.com/rojesh-shikhrakar/mdbook-tooltips"
 
 [dependencies]
 clap = { version = "4.5.51", features = ["derive"] }
