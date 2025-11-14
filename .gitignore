@@ -23,5 +23,5 @@ target
 
 # Added by cargo
 
-/target
-/test-book
+*/target
+*/test_book/
