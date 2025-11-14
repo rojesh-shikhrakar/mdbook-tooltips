@@ -42,10 +42,10 @@ Feature: Parse and replace markdown-style tooltip links with HTML tooltip tags
     When the parser processes the text
     Then the output should be "Note <span class=\"tooltip-word\">Special<span class=\"tooltip-text\">Contains <>&\"' characters</span></span>."
 
-  Scenario: Do not replace when label contains spaces
-    Given the input text "Bad [Two Words](~too word tooltip) should not match."
+  Scenario: Replace when label contains spaces
+    Given the input text "[Two Words](~too word tooltip)"
     When the parser processes the text
-    Then the output should be "Bad [Two Words](~tooltip) should not match."
+    Then the output should be "<span class=\"tooltip-word\">Two Words<span class=\"tooltip-text\">too word tooltip</span></span>"
 
   Scenario Outline: Multiple example inputs and expected outputs
     Given the input text "<input>"
