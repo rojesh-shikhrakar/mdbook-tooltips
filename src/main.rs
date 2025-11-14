@@ -20,8 +20,8 @@ fn main() {
             // We don't support other renderers
             std::process::exit(1);
         }
-    } else if atty::isnt(atty::Stream::Stdin) {
-        // Stdin is not a terminal, so we're being called as a preprocessor
+    } else if is_stdin_piped() {
+        // Stdin is piped, so we're being called as a preprocessor
         if let Err(e) = handle_mdbook_preprocessor() {
             eprintln!("Error: {}", e);
             process::exit(1);
@@ -30,6 +30,19 @@ fn main() {
         // Fall back to CLI mode
         cli::run();
     }
+}
+
+#[cfg(unix)]
+fn is_stdin_piped() -> bool {
+    use std::os::unix::io::AsRawFd;
+    unsafe { libc::isatty(io::stdin().as_raw_fd()) == 0 }
+}
+
+#[cfg(windows)]
+fn is_stdin_piped() -> bool {
+    // On Windows, assume piped if not in interactive console
+    // A more robust approach would use the Windows Console API
+    std::env::var("TERM").is_err() || std::env::var("PIPE").is_ok()
 }
 
 fn handle_mdbook_preprocessor() -> Result<(), Box<dyn std::error::Error>> {

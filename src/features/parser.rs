@@ -8,18 +8,9 @@ use once_cell::sync::Lazy;
 pub struct TooltipParser;
 
 // Compile the regex once for the whole program to avoid repeated compilation costs.
-// Label: any sequence that does not include [ or ]
-// Tooltip: anything up to the next closing parenthesis
 static TOOLTIP_RE: Lazy<Regex> = Lazy::new(|| {
-	// label: no whitespace and no brackets; tooltip: anything up to ')'
 	Regex::new(r"\[(.*?)\]\(~(.*?)\)").expect("Failed to compile tooltip regex")
 });
-
-// // Regex for labels with spaces - to process tooltip text only
-// static TOOLTIP_WITH_SPACES_RE: Lazy<Regex> = Lazy::new(|| {
-// 	// label: contains at least one space, no brackets; tooltip: anything up to ')'
-// 	Regex::new(r"\[([^\[\]]*?\s[^\[\]]*?)\]\(~([^)]+)\)").expect("Failed to compile tooltip with spaces regex")
-// });
 
 impl TooltipParser {
 	/// Create a new parser. The underlying regex is static and shared, so this is cheap.
@@ -28,24 +19,7 @@ impl TooltipParser {
 	}
 
 	/// Process the input text and replace tooltip patterns with HTML tags.
-	///
-	/// This function HTML-escapes both label and tooltip text to avoid accidental
-	/// markup injection from untrusted content.
 	pub fn parse(&self, input: &str) -> String {
-		// First, handle tooltips with spaces in labels - extract only first word of tooltip
-		// let with_spaces_processed = TOOLTIP_WITH_SPACES_RE
-		// 	.replace_all(input, |caps: &regex::Captures| {
-		// 		let label = caps.get(1).map(|m| m.as_str()).unwrap_or("");
-		// 		let tooltip_text = caps.get(2).map(|m| m.as_str().trim()).unwrap_or("");
-				
-		// 		// Extract last word from tooltip (feature expects last token when label has spaces)
-		// 		let last_word = tooltip_text.split_whitespace().last().unwrap_or(tooltip_text);
-				
-		// 		format!("[{}](~{})", label, last_word)
-		// 	})
-		// 	.to_string();
-		
-		// Then, handle normal tooltips - convert to HTML
 		TOOLTIP_RE
 			.replace_all(input, |caps: &regex::Captures| {
 				let label = caps.get(1).map(|m| m.as_str()).unwrap_or("");
@@ -71,10 +45,6 @@ impl Default for TooltipParser {
 		Self::new()
 	}
 }
-
-// Note: HTML-escaping was intentionally removed to preserve existing behaviour
-// expected by the feature tests. If you later want to enable escaping, reintroduce
-// a helper here and update the feature tests accordingly.
 
 #[cfg(test)]
 mod tests {
